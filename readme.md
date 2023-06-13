@@ -3,7 +3,7 @@
 This repo contains an example of the use of [CST](https://github.com/CST-Group/cst) REST API, integrating Python code on CST's Java implementation.
 
 
-The Axe will read a csv file containing a pandas dataframe or a list of numpy arrays and send them - one-by-one - to a server which will pass it through a predefined ML method and classify the entry. We use the simplified propublica compas dataset for fair ML in which the classifier will judge if the subject will reincid or not.
+The Axe will read a csv file containing a pandas dataframe or a list of numpy arrays and send them - one-by-one - to a server which will pass it through a predefined ML method and classify the entry. We use the simplified [propublica compas dataset for fair ML](https://github.com/adebayoj/fairml/blob/master/doc/example_notebooks/propublica_data_for_fairml.csv) in which the classifier will judge if the subject will reincid or not.
  
  ## How it works
 
