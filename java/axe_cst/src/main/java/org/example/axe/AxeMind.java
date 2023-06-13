@@ -32,10 +32,5 @@ public class AxeMind extends Mind {
         ClassificationCaller classificationCaller = new ClassificationCaller(this.apiURL);
         classificationCaller.addInput(reactivityMemory);
         this.insertCodelet(classificationCaller);
-
-        //GermanTranslator germanTranslator = new GermanTranslator(this.apiURL);
-        //germanTranslator.addInput(reactivityMemory);
-        //this.insertCodelet(germanTranslator);
-
     }
 }

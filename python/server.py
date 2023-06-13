@@ -1,7 +1,8 @@
 import sys
-from flask import Flask, request, Response
+from flask import Flask
 import numpy as np
 import pickle
+import json
 
 app = Flask(__name__)
 
@@ -10,35 +11,20 @@ app = Flask(__name__)
 def home():
     return "API."
 
-'''@app.route('/translate/', methods=['POST'])
-def translate():
-    
-    try: 
-        request_data = request.get_json()
-    except:
-        request_data = request.form
-    
-    en_text = list(request_data['en_text'])
 
-
-    tokenized = translate_tokenizer.prepare_seq2seq_batch(en_text, return_tensors="pt")["input_ids"]
-    german_translation = translate_model.generate(tokenized)
-
-    german_text = translate_tokenizer.batch_decode(german_translation, skip_special_tokens=True)
-
-    return german_text'''
-
-
-@app.route('/compas/<x>')
-def classify(x : np.ndarray):
+@app.route('/classify/<x>')
+def classify(x):
+    print(x)
+    x= np.array(json.loads(x)).reshape(1,-1)
     prediction  = model.predict(x)
-
-    return prediction
+    #print(prediction)
+    return json.dumps(prediction.tolist())
+    #return '0'
 
 
 def split(string): 
     li = list(string.split(":")) 
-    return li 
+    return li
 
 
 
@@ -60,6 +46,6 @@ if __name__ == "__main__":
     PORT = int(split(args[0])[1])
     model_option = args[1]
 
-    model = pickle.load(open(f'{model_option}.pk', 'rb'))
+    model = pickle.load(open(f'models/{model_option}.pk', 'rb'))
 
     app.run(debug=True, host=HOST, port=PORT)

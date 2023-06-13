@@ -5,7 +5,7 @@ import org.example.axe.AxeMind;
 public class Main {
     public static void main(String[] args) {
         String apiURI = "http://127.0.0.1:5000";
-        String pathToJson = "/home/wander/Projects/cst_pack/cst_rest_example/java/ana_cst/src/main/resources/tasks.json";
+        String pathToJson = "/home/wander/Projects/cst_pack/cst_compas/java/axe_cst/src/main/resources/x_test.csv";
 
 
         AxeMind anaMind = new AxeMind(apiURI, pathToJson);

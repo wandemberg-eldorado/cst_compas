@@ -4,21 +4,29 @@ import br.unicamp.cst.core.entities.Codelet;
 import br.unicamp.cst.core.entities.Memory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.opencsv.CSVReader;
+import tech.tablesaw.api.Row;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.csv.CsvReadOptions;
 
+import java.io.FileReader;
+import java.io.InputStream;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 public class QASensory extends Codelet {
     Memory sensoryMemory;
-    List<HashMap<String, Object>> tasks;
-
-
-    public QASensory(String pathToJson){
-        this.tasks = getTasks(pathToJson);
-        this.timeStep = 2000;
+    private String pathToCSV;
+    ArrayList<Integer[]> full_data = new ArrayList<>();
+    public QASensory(String pathToCSV){
+        this.timeStep = 1000;
+        this.pathToCSV = pathToCSV;
+        getFullData();
 
     }
 
@@ -36,39 +44,47 @@ public class QASensory extends Codelet {
 
     @Override
     public void proc() {
-        if(tasks.size() != 0){
-            HashMap<String, Object> task = tasks.get(0);
-            sensoryMemory.setI(task);
-            tasks.remove(0);
+        if(!full_data.isEmpty()){
+            sensoryMemory.setI(full_data.get(0));
+            full_data.remove(0);
         }
-        else{sensoryMemory.setI(null);}
+        else{
+            sensoryMemory.setI(null);
+        }
+
     }
 
-    List<HashMap<String, Object>> getTasks(String pathToJson){
-        //tasks
+    void getFullData(){
         try {
-            // create Gson instance
-            Gson gson = new Gson();
+            //parsing a CSV file into CSVReader class constructor
+            System.out.println(pathToCSV);
+            CSVReader reader = new CSVReader(new FileReader(Paths.get(pathToCSV).toFile()));
+            String[] nextLine;
 
-            // create a reader
-            Reader reader = Files.newBufferedReader(Paths.get(pathToJson));
 
-            // convert JSON array to list of users
-            //List<HashMap<String, String>> tasks = new Gson().fromJson(reader, new TypeToken<List<HashMap<String, String>>>() {}.getType());
-            HashMap<String, List<HashMap<String, Object>>> hashtasks = new Gson().fromJson(reader, new TypeToken<HashMap<String, List<HashMap<String, Object>>>>() {}.getType());
+            //reads one line at a time
+            while ((nextLine = reader.readNext()) != null) {
+                ArrayList<Integer> entry = new ArrayList();
+                for (String token: nextLine) {
+                    try{
+                        entry.add(Integer.parseInt(token));
+                    }
+                    catch (Exception e){
+                        entry = null;
+                    }
 
-            tasks = hashtasks.get("tasks");
-            // print users
-            //users.forEach(System.out::println);
+                }
 
-            // close reader
-            reader.close();
-            //System.out.println(tasks.size());
-            return tasks;
+                if(entry != null){
+                    Integer[] arr = new Integer[entry.size()];
+                    arr = entry.toArray(arr);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
+                    full_data.add(arr);
+                }
+            }
         }
-        return null;
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }
